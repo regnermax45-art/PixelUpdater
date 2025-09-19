@@ -62,6 +62,22 @@ jobs:
           java-version: 17
           cache: gradle
 
+      - name: Decode Keystore
+        run: |
+          echo -n "${{ secrets.RELEASE_KEYSTORE_BASE64 }}" | base64 -d > keystore.jks
+
+      
+      - name: Build Release apk
+        env:
+          RELEASE_KEYSTORE: ${{ github.workspace }}/keystore.jks
+          RELEASE_KEY_ALIAS: release
+          RELEASE_KEY_PASSPHRASE: ${{ secrets.RELEASE_KEY_PASSPHRASE }}
+          RELEASE_KEYSTORE_PASSPHRASE: ${{ secrets.RELEASE_KEYSTORE_PASSPHRASE }}
+          SIGNING_KEY: ${{ github.workspace }}/pixelupdater.key
+          SIGNING_KEY_PASSPHRASE: ${{ secrets.SIGNING_KEY_PASSPHRASE }}
+        run: |
+          ./gradlew zipRelease
+
       - name: Debug list artifacts
         run: |
           ls -lR app/build/distributions/release
