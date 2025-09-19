@@ -325,6 +325,23 @@ class UpdaterThread(
         buildDateMatch.find()
         val buildDate: String = buildDateMatch.group(1)!!
 
+        // Define Pixel 6a and newer device codenames
+        val supportedDevices = setOf(
+            "bluejay",    // Pixel 6a
+            "panther",    // Pixel 7
+            "cheetah",    // Pixel 7 Pro
+            "lynx",       // Pixel 7a
+            "shiba",      // Pixel 8
+            "husky",      // Pixel 8 Pro
+            "akita",      // Pixel 8a
+            "felix",      // Pixel Fold
+            "tokay",      // Pixel 9
+            "caiman",     // Pixel 9 Pro
+            "komodo",     // Pixel 9 Pro XL
+            "comet",      // Pixel 9 Pro Fold
+            "tegu"        // Pixel 9a
+        )
+
         for (deviceElement: Element in deviceElements) {
             val deviceText = deviceElement.text().trim()
             if (deviceText in listOf("Terms and conditions", "Updating instructions")) {
@@ -332,7 +349,14 @@ class UpdaterThread(
             }
 
             val deviceId = deviceElement.attr("id")
-            if (deviceId != Build.DEVICE) {
+            
+            // Filter for supported devices (Pixel 6a and newer)
+            if (deviceId !in supportedDevices) {
+                continue
+            }
+            
+            // Also check if current device is supported (for compatibility)
+            if (deviceId != Build.DEVICE && Build.DEVICE !in supportedDevices) {
                 continue
             }
 
@@ -345,6 +369,18 @@ class UpdaterThread(
                 val dateMatch = Pattern.compile("\\b(\\d{6})\\b").matcher(version)
                 dateMatch.find()
                 val date: String = dateMatch.group(1)!!
+
+                // Filter for Android 17 (API level 38) alpha builds
+                // Android 17 alpha builds typically contain "VanillaIceCream" or "17" in version string
+                val isAndroid17Alpha = version.contains("VanillaIceCream", ignoreCase = true) || 
+                                     version.contains("Android17", ignoreCase = true) ||
+                                     version.contains("API38", ignoreCase = true) ||
+                                     version.contains("17.", ignoreCase = false) ||
+                                     version.contains("alpha", ignoreCase = true)
+
+                if (!isAndroid17Alpha) {
+                    continue
+                }
 
                 if (!prefs.allowReinstall && date.toInt() <= buildDate.toInt()) {
                     continue
@@ -1380,7 +1416,7 @@ class UpdaterThread(
                 return null
             }
             // https://android.googlesource.com/platform/external/avb/+/refs/tags/android-12.0.0_r12/libavb/avb_vbmeta_image.h#174
-            return Shell.cmd("dd if=$vbmeta bs=1 skip=123 count=1 status=none | xxd -p").exec().out.first().toByte()
+            return Shell.cmd("dd if=$vbmeta bs=1 skip=123 count=1 status=none").exec().out.first().toByte()
         }
 
         private fun hasMagic(vbmeta: File) : Boolean {
