@@ -81,7 +81,6 @@ jobs:
           SIGNING_KEY_PASSPHRASE: ${{ secrets.SIGNING_KEY_PASSPHRASE }}
         run: |
           ./gradlew zipRelease
-          ./gradlew signReleaseZip
           ./gradlew updateJsonRelease
 
       - name: Debug list artifacts
