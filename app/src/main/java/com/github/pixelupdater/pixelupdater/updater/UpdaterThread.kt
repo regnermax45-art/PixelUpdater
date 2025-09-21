@@ -1316,12 +1316,12 @@ class UpdaterThread(
 
     private fun updateVerificationProgress(current: Int, max: Int) {
         // Enhanced verification progress for Android 17
-        listener.onUpdateProgress(this, ProgressType.VERIFY_DETAILED, current, max)
+        listener.onUpdateProgress(this, ProgressType.VERIFY, current, max)
     }
 
     private fun updateFinalizationProgress(current: Int, max: Int) {
         // Enhanced finalization progress for Android 17
-        listener.onUpdateProgress(this, ProgressType.FINALIZE_DETAILED, current, max)
+        listener.onUpdateProgress(this, ProgressType.FINALIZE, current, max)
     }
 
     private fun calculateEstimatedTimeRemaining(current: Int, max: Int): Long {
