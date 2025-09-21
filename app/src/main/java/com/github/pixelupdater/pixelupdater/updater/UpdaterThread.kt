@@ -170,17 +170,6 @@ class UpdaterThread(
 
             progressType?.let {
                 listener.onUpdateProgress(this@UpdaterThread, it, current, max)
-                
-                // Calculate and report estimated time remaining
-                val estimatedTimeRemaining = calculateEstimatedTimeRemaining(current, max)
-                if (estimatedTimeRemaining > 0) {
-                    listener.onUpdateProgress(
-                        this@UpdaterThread, 
-                        ProgressType.TIME_ESTIMATE, 
-                        estimatedTimeRemaining.toInt(), 
-                        0
-                    )
-                }
             }
         }
 
@@ -1766,10 +1755,6 @@ class UpdaterThread(
         UPDATE,
         VERIFY,
         FINALIZE,
-        // Enhanced progress types for Android 17
-        VERIFY_DETAILED,
-        FINALIZE_DETAILED,
-        TIME_ESTIMATE,
     }
 
     interface UpdaterThreadListener {
