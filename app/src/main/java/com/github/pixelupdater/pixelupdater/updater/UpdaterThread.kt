@@ -1369,7 +1369,7 @@ class UpdaterThread(
             UpdateEngineError.DOWNLOAD_INVALID_METADATA_MAGIC_STRING -> ErrorCategory.VALIDATION
             UpdateEngineError.DOWNLOAD_INVALID_METADATA_SIGNATURE -> ErrorCategory.SECURITY
             UpdateEngineError.FILESYSTEM_COPIER_ERROR -> ErrorCategory.FILESYSTEM
-            UpdateEngineError.POST_INSTALL_RUNNER_ERROR -> ErrorCategory.POST_INSTALL
+            UpdateEngineError.POSTINSTALL_RUNNER_ERROR -> ErrorCategory.POST_INSTALL
             else -> ErrorCategory.UNKNOWN
         }
     }
